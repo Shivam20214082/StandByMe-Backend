@@ -186,10 +186,8 @@ app.post('/save-emergency-details', async (req, res) => {
 
   app.get("/dashboard", async (req, res) => {
     try {
-      const user = await Dashboard.findOne({ username: req.session.usern });
-      if (!user) {
-        return res.status(404).send("User not found");
-      }
+        const user = await Dashboard.findOne({ username: req.session.usern });
+        // console.log(user);
       res.render("dashboard", { user });
     } catch (error) {
       console.error(error);
@@ -216,7 +214,16 @@ app.post("/login", async (req, res) => {
       req.session.usern=req.body.username;
       req.session.emailn=req.body.email;
       // console.log(req.session.emailn);
-      res.status(201).render("index");
+      res.status(201).send(`
+      <html>
+        <head>
+          <meta http-equiv="refresh" content="0; URL=/index" />
+        </head>
+        <body>
+          Redirecting...
+        </body>
+      </html>
+    `);
     }
   } catch (error) {
     if (error.code === 11000 && error.keyPattern.email === 1) {
