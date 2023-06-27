@@ -91,13 +91,6 @@ app.post("/submit-question", async (req, res) => {
   try {
     const { question } = req.body;
     const username = req.session.usern; 
-
-    if (!username) {
-        // Username is not available, show alert message and redirect to home page
-        res.send('<script>alert("Please log in first"); window.location.href = "faqs";</script>');
-        return;
-      }
-
     const newQuestion = new Question({
       username: username,
       question: question,
@@ -109,7 +102,7 @@ app.post("/submit-question", async (req, res) => {
     return;
   } catch (error) {
     console.error(error);
-    res.status(500).send("Server error");
+    res.send('<script>alert("Try Again (check U are Already Login or not)"); window.location.href = "/";</script>');
   }
 });
 
@@ -119,13 +112,6 @@ app.post("/submit-question", async (req, res) => {
 app.post("/contact", async (req, res) => {
   try {
     // res.send(req.body);
-    const { username } = req.session;
-
-    if (!username) {
-    // Username is not available, show alert message and redirect to home page
-    res.send('<script>alert("Please log in first"); window.location.href = "contact";</script>');
-    return;
-  }
     const userData = new User(req.body);
     await userData.save();
     res.status(201).render("index");
@@ -203,7 +189,8 @@ app.post("/login", async (req, res) => {
     const userData = new User1(req.body);
     const user = await User1.findOne({ email: req.body.email });
     if (user) {
-      res.redirect("/login?message=Account Already%20Exit with same Email id");
+        res.send('<script>alert("Email Already Exist"); window.location.href = "login";</script>');
+        return ;
     }
     else{
       await userData.save();
@@ -227,9 +214,11 @@ app.post("/login", async (req, res) => {
     }
   } catch (error) {
     if (error.code === 11000 && error.keyPattern.email === 1) {
-      res.status(409).send("Email already exists");
+        res.send('<script>alert("Email Already Exist"); window.location.href = "login";</script>');
+        return ;
     } else if (error.code === 11000 && error.keyPattern.username === 1) {
-      res.redirect("/login?message=Username%20not Available");
+        res.send('<script>alert("Username Already Exist"); window.location.href = "login";</script>');
+        return ;
     } else {
       res.status(500).send(error);
     }
@@ -259,7 +248,8 @@ app.post("/check", async (req, res) => {
         </body>
       </html>
     `);    } else {
-      res.redirect("/login?message=Incorrect%20password");
+        res.send('<script>alert("Incorrect Passward"); window.location.href = "login";</script>');
+        return ;
     }
   } catch (error) {
     console.error(error);
