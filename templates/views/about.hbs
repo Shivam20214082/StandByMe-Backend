@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>About Us</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="about.css"> <!-- Link to your custom CSS file -->
+</head>
+<body>
+  {{>navbar}}
+
+  <main>
+    <section class="team-section">
+      <h1 style="color: blue;">About Us</h1>
+      <div class="container">
+      <div class="member">
+        <img src="images/male.jpeg" alt="Image of first contributor" style="width: 50%;border-radius: 50%;">
+        <h3>Shivam Kr. Gupta</h3>
+        <p> BTech 2nd Year (CSE) </p>
+        <p>Shivam is a passionate for women's safety and has extensive experience in Full Stack Web Development</p>
+      </div>
+
+      <div class="member">
+        <img src="images/female.jpeg" alt="Image of second contributor" style="width: 50%;border-radius: 50%;">
+        <h3>Shipra Chandra</h3>
+        <p> BTech 2nd Year (CSE) </p>
+        <p>Shipra is a skilled in Full Stack Web Development and is dedicated to creating innovative solutions for women's security.</p>
+      </div>
+    </div>
+    </section>
+  </main>
+
+  {{>footer}}
+
+  <script type="text/javascript">
+    window.__be = window.__be || {};
+    window.__be.id = "649915c34c75ae00077f1f50";
+    (function() {
+        var be = document.createElement('script'); be.type = 'text/javascript'; be.async = true;
+        be.src = ('https:' == document.location.protocol ? 'https://' : 'http://') + 'cdn.chatbot.com/widget/plugin.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(be, s);
+    })();
+</script>
+</body>
+</html>

@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Female Security Website</title>
+    <link rel="stylesheet" href="styles.css" />
+    <!-- Link to custom CSS file -->
+  </head>
+  <body>
+    {{>navbar}}
+
+    <main>
+      <section class="hero-section">
+        <h2>Welcome to StandByMe</h2>
+        <p>
+          Empowering women with knowledge and resources for personal safety.
+        </p>
+        <a href="#" class="cta-button" id="get-started">Get Started</a>
+      </section>
+    </main>
+
+    {{>footer}}
+
+
+    <script>
+      document.getElementById('get-started').addEventListener('click', function(event) {
+        event.preventDefault();
+        window.location.href = 'pathfinder';
+      });
+    </script>
+    <script type="text/javascript">
+    window.__be = window.__be || {};
+    window.__be.id = "649915c34c75ae00077f1f50";
+    (function() {
+        var be = document.createElement('script'); be.type = 'text/javascript'; be.async = true;
+        be.src = ('https:' == document.location.protocol ? 'https://' : 'http://') + 'cdn.chatbot.com/widget/plugin.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(be, s);
+    })();
+</script>
+
+  </body>
+</html>

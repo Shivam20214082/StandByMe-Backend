@@ -1,0 +1,23 @@
+<header>
+      <div class="head" style="display: flex;justify-content: space-between;">
+        <h1 style="text-align: left;">StandByMe</h1>
+        {{#if loggedIn}}
+          <li class="login" style="color: aliceblue;"><a href="dashboard">Profile</a></li>
+        {{else}}
+        <li class="login" style="color: aliceblue;"><a href="login">Login</a></li>
+        {{/if}}
+      </div>
+      <div class="head_back">
+        <div class="dropdown">
+          <button class="dropbtn">&#9776;</button>
+          <div class="dropdown-content">
+            <a href="index">Home</a>
+            <a href="resources">Resources</a>
+            <a href="safety">Safety Tips</a>
+            <a href="faqs">FAQs</a>
+            <a href="news">News</a>
+            <a href="contact">Contact Us</a>
+          </div>
+        </div>
+      </div>
+    </header>

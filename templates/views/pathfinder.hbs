@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SafePath - Find Safest and Shortest Routes</title>
+    <link rel="stylesheet" href="news.css" />
+    <!-- Link to custom CSS file -->
+
+    <style>
+      .hero-section {
+        text-align: center;
+        background-color: antiquewhite;
+        padding: 20px;
+      }
+      .pathfinder-form {
+        display: flex;
+        flex-direction: column;
+        max-width: 400px;
+        margin: 0 auto;
+      }
+      .pathfinder-form input {
+        margin-bottom: 10px;
+        padding: 5px;
+      }
+      .pathfinder-form button {
+        padding: 10px;
+        background-color: #4caf50;
+        color: white;
+        border: none;
+        cursor: pointer;
+      }
+    </style>
+    <style>
+    #map {
+      height: 100vh;
+      /* width: 100vw; */
+    }
+
+    .mapboxgl-ctrl-group {
+      display: flex;
+      flex-direction: row;
+      align-items: flex-start;
+      justify-content: center;
+      background-color: #ffffff;
+      border-radius: 4px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+      padding: 8px;
+      margin: 8px;
+    }
+
+    .mapboxgl-ctrl-group > button {
+      margin-bottom: 8px;
+      padding: 4px 8px;
+      background-color: #f8f8f8;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    .places-container {
+      position: absolute;
+      top: 80px;
+      left: 16px;
+      z-index: 1;
+      background-color: #fff;
+      padding: 8px;
+      border-radius: 4px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    }
+
+    .place-item {
+      padding: 4px;
+      cursor: pointer;
+    }
+
+    .place-item:hover {
+      background-color: #f8f8f8;
+    }
+  </style>
+  <link href='https://api.mapbox.com/mapbox-gl-js/v2.4.1/mapbox-gl.css' rel='stylesheet' />
+  </head>
+  <body>
+    {{>navbar}}
+
+    <main>
+      <section class="hero-section">
+        <h2>Welcome to SafePath</h2>
+        <p>Find the safest and shortest routes with crime rate and traffic information.</p>
+        <!-- <form id="pathfinder-form" class="pathfinder-form">
+          <label for="origin">Origin:</label>
+          <input type="text" id="origin" required />
+          <br />
+          <label for="destination">Destination:</label>
+          <input type="text" id="destination" required />
+          <br />
+          <button type="submit">Find Path</button>
+        </form>
+        <div id="path-results"></div> -->
+      </section>
+    </main>
+
+    
+    <div id='map'  style="padding: 30px;margin: 30px;"></div>
+    <div id='places-container' ></div>
+    {{>footer}}
+    <script src='https://api.mapbox.com/mapbox-gl-js/v2.4.1/mapbox-gl.js'></script>
+  <script src='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-directions/v4.1.0/mapbox-gl-directions.js'></script>
+  <script src='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.7.0/mapbox-gl-geocoder.min.js'></script>
+  <link href='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-directions/v4.1.0/mapbox-gl-directions.css' rel='stylesheet' />
+  <link href='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.7.0/mapbox-gl-geocoder.css' rel='stylesheet' />
+
+  <script>
+    mapboxgl.accessToken = 'pk.eyJ1Ijoic3ViaGFtcHJlZXQiLCJhIjoiY2toY2IwejF1MDdodzJxbWRuZHAweDV6aiJ9.Ys8MP5kVTk5P9V2TDvnuDg';
+
+    let map;
+    let placesContainer;
+
+    navigator.geolocation.getCurrentPosition(successLocation, errorLocation, {
+      enableHighAccuracy: true
+    });
+
+    function successLocation(position) {
+      setupMap([position.coords.longitude, position.coords.latitude]);
+      addMarker([position.coords.longitude, position.coords.latitude]);
+      getNearbyPlaces([position.coords.longitude, position.coords.latitude]);
+    }
+
+    function errorLocation() {
+      setupMap([-2.24, 53.48]);
+    }
+
+    function setupMap(center) {
+      map = new mapboxgl.Map({
+        container: 'map',
+        style: 'mapbox://styles/mapbox/dark-v10',
+        center: center,
+        zoom: 12
+      });
+
+      const nav = new mapboxgl.NavigationControl();
+      map.addControl(nav);
+
+      var directions = new MapboxDirections({
+        accessToken: mapboxgl.accessToken
+      });
+
+      map.addControl(directions, 'top-left');
+
+      const customControl = document.createElement('div');
+      customControl.className = 'mapboxgl-ctrl-group';
+
+      const customButton = document.createElement('button');
+      customButton.textContent = 'Custom Control';
+
+      customButton.addEventListener('click', () => {
+        alert('Custom control button clicked!');
+      });
+
+      customControl.appendChild(customButton);
+
+      map.on('load', () => {
+        map.addControl(new mapboxgl.FullscreenControl(), 'top-right');
+        map.addControl(new mapboxgl.GeolocateControl({
+          positionOptions: {
+            enableHighAccuracy: true
+          },
+          trackUserLocation: true
+        }), 'top-right');
+        map.addControl(new mapboxgl.ScaleControl({
+          maxWidth: 80,
+          unit: 'metric'
+        }), 'bottom-right');
+        map.addControl(new mapboxgl.AttributionControl(), 'bottom-right');
+      });
+      map.addControl(new mapboxgl.FullscreenControl(), 'top-right');
+    }
+
+    function addMarker(coordinates) {
+      const marker = new mapboxgl.Marker()
+        .setLngLat(coordinates)
+        .addTo(map);
+    }
+
+    function getNearbyPlaces(coordinates) {
+      map.on('load', () => {
+        map.addSource('places', {
+          type: 'geojson',
+          data: {
+            type: 'FeatureCollection',
+            features: []
+          }
+        });
+
+        placesContainer = document.getElementById('places-container');
+
+        map.addLayer({
+          id: 'places',
+          type: 'circle',
+          source: 'places',
+          paint: {
+            'circle-radius': 6,
+            'circle-color': '#ff0000'
+          }
+        });
+
+        const places = new mapboxgl.places({
+          accessToken: mapboxgl.accessToken,
+          proximity: {
+            longitude: coordinates[0],
+            latitude: coordinates[1]
+          },
+          types: ['restaurant', 'hotel', 'park']
+        });
+
+        places.search({
+          radius: 1000,
+          limit: 5
+        }, (err, data) => {
+          if (err) {
+            console.error(err);
+            return;
+          }
+
+          const placesData = data.body;
+          const features = [];
+
+          placesData.features.forEach((place) => {
+            features.push({
+              type: 'Feature',
+              properties: {
+                title: place.text,
+                description: place.properties.address
+              },
+              geometry: {
+                type: 'Point',
+                coordinates: place.geometry.coordinates
+              }
+            });
+          });
+
+          map.getSource('places').setData({
+            type: 'FeatureCollection',
+            features: features
+          });
+
+          placesData.features.forEach((place) => {
+            const placeItem = document.createElement('div');
+            placeItem.className = 'place-item';
+            placeItem.textContent = place.text;
+
+            placeItem.addEventListener('click', () => {
+              flyToPlace(place.geometry.coordinates);
+            });
+
+            placesContainer.appendChild(placeItem);
+          });
+        });
+      });
+    }
+
+    function flyToPlace(coordinates) {
+      map.flyTo({
+        center: coordinates,
+        zoom: 15
+      });
+    }
+  </script>
+  <script type="text/javascript">
+    window.__be = window.__be || {};
+    window.__be.id = "649915c34c75ae00077f1f50";
+    (function() {
+        var be = document.createElement('script'); be.type = 'text/javascript'; be.async = true;
+        be.src = ('https:' == document.location.protocol ? 'https://' : 'http://') + 'cdn.chatbot.com/widget/plugin.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(be, s);
+    })();
+</script>
+    
+
+  </body>
+</html>

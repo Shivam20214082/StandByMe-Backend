@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="style.css">
+        <title>DashBoard</title>
+        <style>
+            body {
+                font-family: Arial, sans-serif;
+                text-align: center;
+            }
+
+            .heading {
+                color: rgb(249, 4, 53);
+                font-size: 36px;
+                margin-top: 50px;
+            }
+            h2 {
+                color: rgb(12 47 220);
+                font-size: 24px;
+            }
+
+            p {
+                color: rgb(12 47 220);
+                font-size: 24px;
+                margin-bottom: 30px;
+            }
+
+            .logout {
+                margin-bottom: 10px;
+                cursor: pointer;
+                width: 30%;
+                margin-top: 25px;
+                text-align: center;
+                height: 46px;
+                border-radius: 12px;
+                color: white;
+                background-color: red;
+            }
+            .dash-item {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                padding: 10px;
+                border-bottom: 1px solid #ccc;
+            }
+
+            .dash-item img {
+                width: 80px;
+                height: 80px;
+                object-fit: cover;
+                margin-right: 20px;
+            }
+
+            .dash-item h3 {
+                margin: 0;
+                font-size: 18px;
+            }
+
+            .dash-item p {
+                margin: 0;
+                font-size: 16px;
+                color: #666;
+            }
+
+            .container {
+                background-color: antiquewhite;
+                border-radius: 20px;
+                border: 2px solid black;
+                width: 65%;
+                margin: 0 auto;
+                padding: 40px;
+            }
+
+            h2 {
+                margin-bottom: 10px;
+            }
+            form {}
+
+            .form-group {
+                margin-bottom: 20px;
+            }
+
+            label {
+                display: block;
+                margin-bottom: 5px;
+                font-weight: bold;
+            }
+
+            input[type="text"],
+            input[type="email"],
+            input[type="tel"],
+            textarea {
+                width: 100%;
+                padding: 8px;
+                border: 1px solid #ccc;
+                border-radius: 4px;
+            }
+
+            select {
+                width: 100%;
+                padding: 8px;
+                border: 1px solid #ccc;
+                border-radius: 4px;
+            }
+
+            button[type="submit"] {
+                background-color: #4CAF50;
+                color: #fff;
+                padding: 10px 20px;
+                border: none;
+                border-radius: 4px;
+                cursor: pointer;
+            }
+
+            button[type="submit"]:hover {
+                background-color: #45a049;
+            }
+        </style>
+    </head>
+    <body>
+
+        {{>navbar}}
+        <div class="btn">
+            <h1 class="heading">Welcome
+                {{usern}}</h1>
+            <h2>We apologize for the inconvenience, but our website is currently undergoing maintenance.</h2>
+            <p>We are working on DashBoard profile!</p>
+
+            <div class="container">
+                <h2>Personal Details</h2>
+                <form id="personal-form" action="/save-personal-details" method="post">
+                    <div class="form-group">
+                        <label for="full-name">Full Name:</label>
+                        <input type="text" id="full-name" name="fullName" value="{{ user.fullName }}" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email:</label>
+                        <input type="email" id="email" name="email" value="{{ user.email }}" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="mobile-number">Mobile Number:</label>
+                        <input type="tel" id="mobile-number" name="mobileNumber" pattern="[0-9]{10}" value="{{ user.mobileNumber }}" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="address">Address:</label>
+                        <textarea id="address" name="address" rows="4" required>{{ user.address }}</textarea>
+                    </div>
+                    <button type="submit">Save Personal Details</button>
+                </form>
+
+                <h2>Emergency Details</h2>
+                <form id="emergency-form" action="/save-emergency-details" method="post">
+  <div class="form-group">
+    <label for="person-name">Person Name:</label>
+    <input type="text" id="person-name" name="personName" value="{{ user.personName }}" required>
+  </div>
+  <div class="form-group">
+    <label for="emergency-contact">Emergency Contact Number:</label>
+    <input type="tel" id="emergency-contact" name="emergencyContact" pattern="[0-9]{10}" value="{{ user.emergencyContact }}" required>
+  </div>
+  <div class="form-group">
+    <label for="emergency-email">Emergency Email:</label>
+    <input type="email" id="emergency-email" name="emergency-email" value="{{ user.emergencyEmail }}" required>
+  </div>
+  <div class="form-group">
+    <label for="relation">Relation:</label>
+    <select id="relation" name="relation" required>
+      <option value="">Select Relation</option>
+      <option value="Parent"{{#eq user.relation "Parent"}} selected{{/eq}}>Parent</option>
+      <option value="Sibling"{{#eq user.relation "Sibling"}} selected{{/eq}}>Sibling</option>
+      <option value="Spouse"{{#eq user.relation "Spouse"}} selected{{/eq}}>Spouse</option>
+      <option value="Friend"{{#eq user.relation "Friend"}} selected{{/eq}}>Friend</option>
+      <option value="Other"{{#eq user.relation "Other"}} selected{{/eq}}>Other</option>
+    </select>
+  </div>
+  <button type="submit">Save Emergency Details</button>
+</form>
+            </div>
+
+            <input class="logout" id="logout-btn" onclick="logout()" type="button" value="Logout"/>
+
+        </div>
+        {{>footer}}
+
+
+        <script></script>
+
+        <script src="script.js"></script>
+        <script type="text/javascript">
+    window.__be = window.__be || {};
+    window.__be.id = "649915c34c75ae00077f1f50";
+    (function() {
+        var be = document.createElement('script'); be.type = 'text/javascript'; be.async = true;
+        be.src = ('https:' == document.location.protocol ? 'https://' : 'http://') + 'cdn.chatbot.com/widget/plugin.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(be, s);
+    })();
+</script>
+    </body>
+</html>

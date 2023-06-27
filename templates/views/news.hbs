@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script
+    src="https://kit.fontawesome.com/2dfb895f73.js"
+    crossorigin="anonymous"
+    ></script>
+    <title>News</title>
+    <style>
+      
+    </style>
+    <link rel="stylesheet" href="news.css" />
+    <!-- Link to custom CSS file -->
+  </head>
+  <body>
+    {{>navbar}}
+    
+    <section class="news">
+      <div id="news-container"></div>
+      <div class="news-btn">
+        <button onclick="loadMoreNews()">See More</button>
+      </div>
+    </section>
+    
+    {{>footer}}
+    
+    <script>
+      const apiKey = "12e417835ffb02577c845853f3015e7f";
+      const apiUrl = `https://gnews.io/api/v4/search?q=crime%20against%20women&lang=en&token=${apiKey}`;
+
+      // Fetch news data from the API
+      async function fetchNews(containerId) {
+        try {
+          const response = await fetch(apiUrl);
+          const data = await response.json();
+          const articles = data.articles;
+
+          const newsContainer = document.getElementById(containerId);
+
+          // Display news articles
+          for (let i = 0; i < articles.length; i++) {
+            if (i >= 10) {
+              break;
+            }
+            const article = articles[i];
+            const { title, publishedAt, description, image, url } = article;
+
+            const newsItem = document.createElement("div");
+            newsItem.className = "news1";
+
+            const newsImage = document.createElement("img");
+            newsImage.className = "news-image";
+            newsImage.src = image;
+            newsImage.alt = title;
+
+            const newsDetails = document.createElement("div");
+            newsDetails.className = "news-details";
+
+            const newsTitle = document.createElement("h3");
+            newsTitle.className = "news-title";
+            newsTitle.textContent = title;
+
+            const newsDate = document.createElement("p");
+            newsDate.className = "news-date";
+            newsDate.textContent = new Date(publishedAt).toDateString();
+
+            const newsDescription = document.createElement("p");
+            newsDescription.className = "news-description";
+            newsDescription.textContent = description;
+
+            const newsLink = document.createElement("a");
+            newsLink.href = url;
+            newsLink.target = "_blank";
+            newsLink.textContent = "Read More";
+            newsLink.style =
+              "color:white; border:solid black; background-color:red;border-radius:5px ; float:right;padding:5px";
+
+            newsDetails.append(newsTitle, newsDate, newsDescription, newsLink);
+            newsItem.append(newsImage, newsDetails);
+            newsContainer.appendChild(newsItem);
+          }
+        } catch (error) {
+          console.error("Error fetching news:", error);
+        }
+      }
+
+      // Load more news and redirect to a new page
+      function loadMoreNews() {
+        window.location.href = "news";
+      }
+
+      // Fetch news on page load
+      fetchNews("news-container");
+    </script>
+    <script type="text/javascript">
+    window.__be = window.__be || {};
+    window.__be.id = "649915c34c75ae00077f1f50";
+    (function() {
+        var be = document.createElement('script'); be.type = 'text/javascript'; be.async = true;
+        be.src = ('https:' == document.location.protocol ? 'https://' : 'http://') + 'cdn.chatbot.com/widget/plugin.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(be, s);
+    })();
+</script>
+  </body>
+</html>
