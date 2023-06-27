@@ -2,8 +2,12 @@ const express = require("express");
 const path = require("path");
 const app = express();
 const hbs = require("hbs");
+const bodyParser = require('body-parser');
+const twilio = require('twilio');
+
 const Dashboard = require('./models/dashboardModel');
 require("./db/conn");
+
 
 const User = require("./models/usermessage");
 const User1 = require("./models/userlogin");
@@ -18,6 +22,8 @@ const handlebars = require('hbs');
 handlebars.registerHelper('eq', function (a, b) {
   return a === b;
 });
+
+app.use(bodyParser.json());
 app.use(
   session({
     secret: "your secret key",
@@ -104,6 +110,67 @@ app.post("/submit-question", async (req, res) => {
     console.error(error);
     res.send('<script>alert("Try Again (check U are Already Login or not)"); window.location.href = "/";</script>');
   }
+});
+
+
+// Function to retrieve the user's mobile number from the database
+async function getUserMobileNumberFromDatabase(username) {
+  try {
+    const dashboard = await Dashboard.findOne({ username: username });
+    return dashboard.mobileNumber;
+  } catch (error) {
+    console.error('Error retrieving user mobile number:', error);
+    return null;
+  }
+}
+
+// Function to retrieve the emergency contact number from the database
+async function getEmergencyContactNumberFromDatabase(username) {
+  try {
+    const dashboard = await Dashboard.findOne({ username: username });
+    return dashboard.emergencyContact;
+  } catch (error) {
+    console.error('Error retrieving emergency contact number:', error);
+    return null;
+  }
+}
+
+app.post('/send-emergency-sms', async (req, res) => {
+  const { latitude, longitude } = req.body;
+  const username = req.session.usern;
+
+  const accountSid = 'AC58a7548c25349aea439e42559affb406';
+  const authToken = 'b6cd54a57581e441508fcffba3bc4601';
+  const client = twilio(accountSid, authToken);
+
+  const userPhoneNumber = await getUserMobileNumberFromDatabase(username);
+  const emergencyPhoneNumber = await getEmergencyContactNumberFromDatabase(username);
+
+  if (!userPhoneNumber || !emergencyPhoneNumber) {
+    console.error('User mobile number or emergency contact number not found in database');
+    res.status(500).json({ success: false, message: 'User mobile number or emergency contact number not found' });
+    return;
+  }
+
+  const messageBody = `Emergency! User's location: Latitude: ${latitude}, Longitude: ${longitude}`;
+
+  client.messages
+    .create({
+      body: messageBody,
+      from: '+14178553049', // Your Twilio phone number
+      to: [userPhoneNumber, emergencyPhoneNumber] // Phone numbers as strings
+    })
+    .then(message => {
+      console.log('Emergency SMS sent successfully. SID:', message.sid);
+      // res.send('<script>alert("once check that your number should be verified at https://console.twilio.com/us1/develop/phone-numbers/manage/verified "); window.location.href = "/";</script>');
+      res.status(201).render("index");
+    })
+    .catch(error => {
+      return;
+      console.error('Error sending emergency SMS:', error.message);
+      res.status(500).json({ success: false, message: 'Error sending emergency SMS' });
+    });
+    
 });
 
 

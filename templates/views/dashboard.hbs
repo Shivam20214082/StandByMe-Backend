@@ -141,8 +141,8 @@
                         <input type="email" id="email" name="email" value="{{ user.email }}" required>
                     </div>
                     <div class="form-group">
-                        <label for="mobile-number">Mobile Number:</label>
-                        <input type="tel" id="mobile-number" name="mobileNumber" pattern="[0-9]{10}" value="{{ user.mobileNumber }}" required>
+                        <label for="mobile-number">Mobile Number(with country code):</label>
+                        <input type="text" id="mobile-number" name="mobileNumber" pattern="\+[0-9]{12}" value="{{ user.mobileNumber }}" required>
                     </div>
                     <div class="form-group">
                         <label for="address">Address:</label>
@@ -158,8 +158,8 @@
     <input type="text" id="person-name" name="personName" value="{{ user.personName }}" required>
   </div>
   <div class="form-group">
-    <label for="emergency-contact">Emergency Contact Number:</label>
-    <input type="tel" id="emergency-contact" name="emergencyContact" pattern="[0-9]{10}" value="{{ user.emergencyContact }}" required>
+    <label for="emergency-contact">Emergency Contact Number(with country code):</label>
+    <input type="text" id="emergency-contact" name="emergencyContact" pattern="\+[0-9]{12}" value="{{ user.emergencyContact }}" required>
   </div>
   <div class="form-group">
     <label for="emergency-email">Emergency Email:</label>
@@ -183,6 +183,10 @@
             <input class="logout" id="logout-btn" onclick="logout()" type="button" value="Logout"/>
 
         </div>
+        <button id="emergency-button" title="Please click on above link for verify your mobile number for emergency services and enter mobile number with country code" onclick="showLocation()">Emergency</button>
+    <div id="content-div">
+  <a href="https://console.twilio.com/us1/develop/phone-numbers/manage/verified" target="_blank">Verify MobileNumber</a>
+</div>
         {{>footer}}
 
 

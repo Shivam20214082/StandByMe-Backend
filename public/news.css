@@ -91,7 +91,7 @@ h2 {
 
   /* Global Styles */
 body {
-    background-image: url('../images/homePageImage.jpeg');
+    background-image: url('../images/homePageImage.jpg');
     /* background-position: center; */
     font-family: Arial, sans-serif;
     margin: 0;
@@ -102,6 +102,26 @@ body {
     background-size: cover;
 }
 
+#emergency-button {
+  position: fixed;
+  bottom: 20px;
+  left: 20px;
+  padding: 10px 20px;
+  background-color: #ff0000;
+  color: #ffffff;
+  font-size: 16px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  opacity: 1;
+  transition: opacity 0.3s ease-in-out;
+}
+#content-div {
+  bottom: 50px;
+  left: 20px;
+  padding: 10px 20px;
+  position: fixed;
+}
 
 /* Header Styles */
 header {

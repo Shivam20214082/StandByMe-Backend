@@ -47,3 +47,36 @@ navigator.geolocation.getCurrentPosition(successLocation, errorLocation, {
   function direct() {
     window.location.href = "/dashboard";
   }
+
+
+  // Function to get the user's location
+  function showLocation() {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(sendEmergencySMS);
+    } else {
+      console.log("Geolocation is not supported by this browser.");
+    }
+  }
+
+  // Function to send emergency SMS
+  function sendEmergencySMS(position) {
+    const latitude = position.coords.latitude;
+    const longitude = position.coords.longitude;
+
+    const request = new XMLHttpRequest();
+    request.open("POST", "/send-emergency-sms", true);
+    request.setRequestHeader("Content-Type", "application/json");
+
+    request.onreadystatechange = function () {
+      if (request.readyState === 4 && request.status === 200) {
+        console.log("Emergency SMS sent successfully.");
+      }
+    };
+
+    const data = JSON.stringify({
+      latitude: latitude,
+      longitude: longitude,
+    });
+
+    request.send(data);
+  }
